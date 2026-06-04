@@ -1,0 +1,26 @@
+import { useState } from "react";
+
+function App() {
+  const [x, setX] = useState(1);
+  const [clickCount, setClickCount] = useState(0);
+
+  const handleClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+
+    if (newCount === 3) {
+      setX((prev) => prev * 2);
+      setClickCount(0); 
+
+
+  return (
+    <div>
+      <h1>Value of X: {x}</h1>
+      <p>Button: {clickCount}</p>
+
+      <button onClick={handleClick}> Click Me </button>
+    </div>
+  );
+}
+
+export default App;
