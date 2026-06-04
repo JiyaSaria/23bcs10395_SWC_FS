@@ -11,7 +11,7 @@ function App() {
     if (newCount === 3) {
       setX((prev) => prev * 2);
       setClickCount(0); 
-
+    }};
 
   return (
     <div>
