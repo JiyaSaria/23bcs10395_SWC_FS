@@ -1,26 +1,77 @@
 import { useState } from "react";
 
-function App() {
-  const [x, setX] = useState(1);
-  const [clickCount, setClickCount] = useState(0);
+export default function TaskManager() {
+  const [currentInput, setCurrentInput] = useState("");
+  const [todos, setTodos] = useState([]);
 
-  const handleClick = () => {
-    const newCount = clickCount + 1;
-    setClickCount(newCount);
+  const addTask = () => {
+    if (currentInput.trim() === "") return;
 
-    if (newCount === 3) {
-      setX((prev) => prev * 2);
-      setClickCount(0); 
-    }};
+    const newTask = {
+      id: Date.now(),
+      text: currentInput,
+      completed: false,
+    };
+
+    setTodos([...todos, newTask]);
+    setCurrentInput(""); // Clear input
+  };
+
+  const toggleTask = (id) => {
+    const updatedTodos = todos.map((todo) =>
+      todo.id === id
+        ? { ...todo, completed: !todo.completed }
+        : todo
+    );
+
+    setTodos(updatedTodos);
+  };
+
+  const deleteTask = (id) => {
+    const updatedTodos = todos.filter(
+      (todo) => todo.id !== id
+    );
+
+    setTodos(updatedTodos);
+  };
 
   return (
-    <div>
-      <h1>Value of X: {x}</h1>
-      <p>Button: {clickCount}</p>
+    <div style={{ padding: "20px" }}>
+      <h2>Task Manager</h2>
 
-      <button onClick={handleClick}> Click Me </button>
+      <input
+        type="text"
+        value={currentInput}
+        onChange={(e) => setCurrentInput(e.target.value)}
+        placeholder="Enter a task"
+      />
+
+      <button onClick={addTask}>Add</button>
+
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            <span
+              onClick={() => toggleTask(todo.id)}
+              style={{
+                cursor: "pointer",
+                textDecoration: todo.completed
+                  ? "line-through"
+                  : "none",
+              }}
+            >
+              {todo.text}
+            </span>
+
+            <button
+              onClick={() => deleteTask(todo.id)}
+              style={{ marginLeft: "10px" }}
+            >
+              X
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
-
-export default App;
