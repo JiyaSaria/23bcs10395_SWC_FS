@@ -1,77 +1,81 @@
 import { useState } from "react";
 
-export default function TaskManager() {
-  const [currentInput, setCurrentInput] = useState("");
-  const [todos, setTodos] = useState([]);
+export default function LoginForm() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const addTask = () => {
-    if (currentInput.trim() === "") return;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-    const newTask = {
-      id: Date.now(),
-      text: currentInput,
-      completed: false,
-    };
-
-    setTodos([...todos, newTask]);
-    setCurrentInput(""); // Clear input
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  const toggleTask = (id) => {
-    const updatedTodos = todos.map((todo) =>
-      todo.id === id
-        ? { ...todo, completed: !todo.completed }
-        : todo
-    );
+  const emailValid =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
 
-    setTodos(updatedTodos);
-  };
+  const passwordValid =
+    formData.password.length >= 8 &&
+    /\d/.test(formData.password);
 
-  const deleteTask = (id) => {
-    const updatedTodos = todos.filter(
-      (todo) => todo.id !== id
-    );
+  const isFormValid = emailValid && passwordValid;
 
-    setTodos(updatedTodos);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (isFormValid) {
+      alert("Login Successful!");
+    }
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Task Manager</h2>
+      <h2>Login Form</h2>
 
-      <input
-        type="text"
-        value={currentInput}
-        onChange={(e) => setCurrentInput(e.target.value)}
-        placeholder="Enter a task"
-      />
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
 
-      <button onClick={addTask}>Add</button>
+          {formData.email && !emailValid && (
+            <p>Email must be a valid email address.</p>
+          )}
+        </div>
 
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            <span
-              onClick={() => toggleTask(todo.id)}
-              style={{
-                cursor: "pointer",
-                textDecoration: todo.completed
-                  ? "line-through"
-                  : "none",
-              }}
-            >
-              {todo.text}
-            </span>
+        <br />
 
-            <button
-              onClick={() => deleteTask(todo.id)}
-              style={{ marginLeft: "10px" }}
-            >
-              X
-            </button>
-          </li>
-        ))}
-      </ul>
+        <div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter Password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+
+          {formData.password && !passwordValid && (
+            <p>
+              Password must be at least 8 characters and
+              contain at least one number.
+            </p>
+          )}
+        </div>
+
+        <br />
+
+        <button type="submit" disabled={!isFormValid}>
+          Login
+        </button>
+      </form>
     </div>
   );
 }
